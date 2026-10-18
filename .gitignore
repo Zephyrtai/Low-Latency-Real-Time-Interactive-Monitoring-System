@@ -4,4 +4,6 @@ notes/
 PICO_code/secrets.py
 PICO_code/__pycache__/
 
+Low_latency_HMI_Unity/UIElementsSchema/
+
 .vscode/
