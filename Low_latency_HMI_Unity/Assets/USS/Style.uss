@@ -1,0 +1,64 @@
+.value {
+    padding-top: 4px;
+    padding-right: 2px;
+    padding-bottom: 4px;
+    padding-left: 1px;
+    margin-top: 6px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    margin-left: 2px;
+}
+
+.distance_title {
+    margin-right: 4px;
+    margin-bottom: 6px;
+    margin-left: 2px;
+    padding-right: 2px;
+    padding-bottom: 4px;
+    padding-left: 1px;
+    font-size: 13px;
+    margin-top: 4px;
+    padding-top: 4px;
+}
+
+.lable_in_control {
+    color: rgb(255, 255, 255);
+    font-size: 11.5px;
+    margin-top: 4px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    margin-left: 2px;
+    padding-top: 4px;
+    padding-right: 2px;
+    padding-bottom: 4px;
+    padding-left: 1px;
+}
+
+.dropdown {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-left-color: rgb(188, 188, 188);
+    border-right-color: rgb(188, 188, 188);
+    border-top-color: rgb(188, 188, 188);
+    border-bottom-color: rgb(188, 188, 188);
+    background-color: rgb(56, 58, 68);
+    margin-bottom: 6px;
+    margin-top: 1px;
+    margin-right: 4px;
+    margin-left: 4px;
+}
+
+#dashboard-panel > #Content > #Control_card > #Alpha_Slider > .unity-slider__input > #unity-drag-container > #unity-dragger {
+    width: 25px;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    border-top-left-radius: 40px;
+    border-top-right-radius: 40px;
+    border-bottom-right-radius: 40px;
+    border-bottom-left-radius: 40px;
+    scale: 0.6 0.6 0.6;
+}

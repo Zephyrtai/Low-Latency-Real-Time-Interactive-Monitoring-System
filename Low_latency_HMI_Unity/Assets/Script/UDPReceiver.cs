@@ -4,13 +4,25 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using UnityEngine;
+using Zephyr.UnityLowLatencyHMI;
 
+/// <summary>
+/// Attach this component to an active GameObject in the scene.
+/// </summary>
 
 [Serializable]
 public class SensorData
 {
+    public int packet_id;
     public float speed;
     public float raw_distance;
+}
+
+[Serializable]
+public class CheckingData
+{
+    public string type;
+    public int packet_id;
 } 
 
 public class UDPReceiver : MonoBehaviour
@@ -19,6 +31,20 @@ public class UDPReceiver : MonoBehaviour
     UdpClient client;
     public int port = 5005;
     private bool isRunning = true;
+
+    private MetricsCollector collector;
+
+    // Receive thread writes; Unity main thread reads.
+    private readonly object latestLock = new object();
+    private float latestRawDistance;
+    private bool hasLatestDistance;
+
+    private void Awake()
+    {
+        collector = GetComponent<MetricsCollector>();
+
+        if (collector == null) Debug.LogError("There's no MetricsCollector component on this object, ", this);
+    }
 
     private void Start()
     {
@@ -35,6 +61,7 @@ public class UDPReceiver : MonoBehaviour
         receiveThread.Start();
         Debug.Log("UDP Receiver started.");
     }
+
     private void ReceiveData()
     {  
         while (isRunning)
@@ -42,14 +69,46 @@ public class UDPReceiver : MonoBehaviour
             try
             {   //1. Create client
                 if (client == null) client = new UdpClient(port);
-                //2. Ready to receive data
-                IPEndPoint anyIP = new IPEndPoint(IPAddress.Any, 0);
-                byte[] data = client.Receive(ref anyIP);
-               //3. Parse
+                //2. Receive the packet and obtain the sender's endpoint
+                IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
+                byte[] data = client.Receive(ref sender);
+                //3. Get the received Timestamp
+                long recievedTicks = MetricsCollector.GetTimeStamp();
+               //4. Decode
                 string text = Encoding.UTF8.GetString(data);
-               //4. read data
+               //5. Read data
                 SensorData sensor = JsonUtility.FromJson<SensorData>(text);
-                Debug.Log($"speed: {sensor.speed} | raw distance: {sensor.raw_distance}");
+                //6. Create a checking with the same ID
+                CheckingData check = new CheckingData
+                {
+                    type = "checking",
+                    packet_id = sensor.packet_id,
+                };
+                //7. Object to JSON String, then to bytes
+                string checkJson = JsonUtility.ToJson(check);
+                byte[] checkBytes = Encoding.UTF8.GetBytes(checkJson); // Encode
+
+                //8. Send it back to the sender
+                client.Send(checkBytes, checkBytes.Length, sender);
+
+                //9. Record
+                collector?.RecordSample(
+                    sensor.packet_id,
+                    sensor.raw_distance,
+                    recievedTicks);
+
+                // Publish the latest distance for the dashboard.
+                lock (latestLock)
+                {
+                    latestRawDistance = sensor.raw_distance;
+                    hasLatestDistance = true;
+                }
+
+                Debug.Log(
+                    $"ID: {sensor.packet_id} | " +
+                    //$"speed: {sensor.speed} | " +
+                    $"raw distance: {sensor.raw_distance}"
+                    );
             }
             catch (SocketException e)
             {  
@@ -60,6 +119,15 @@ public class UDPReceiver : MonoBehaviour
             {
                 Debug.LogError(err.ToString());
             }
+        }
+    }
+
+    public bool TryGetLatestDistance(out float distance)
+    {
+        lock (latestLock)
+        {
+            distance = latestRawDistance;
+            return hasLatestDistance;
         }
     }
 

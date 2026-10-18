@@ -2,5 +2,6 @@
 notes/
 
 PICO_code/secrets.py
+PICO_code/__pycache__/
 
 .vscode/
