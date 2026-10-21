@@ -10,6 +10,7 @@ using Stopwatch = System.Diagnostics.Stopwatch;
 /// receive -> memory buffer -> CSV when recording stops.
 /// Attach this component to an active GameObject in the scene.(MonoBehaviour)
 /// </summary>
+
 namespace Zephyr.UnityLowLatencyHMI
 {
     public class MetricsCollector : MonoBehaviour
