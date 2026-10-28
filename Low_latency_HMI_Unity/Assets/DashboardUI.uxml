@@ -24,7 +24,7 @@
                     </ui:VisualElement>
                     <ui:VisualElement name="graph_area" style="margin-top: 26px; flex-grow: 0; flex-direction: column; height: 206px; width: 373px; padding-left: 12px;">
                         <ui:Label text="Distance over time" name="distance_over_time" class="CustomLable" style="color: white; font-size: 13px; height: 24px; flex-shrink: 0; white-space: nowrap; width: 312px; -unity-text-align: middle-left; margin-top: 4px;"/>
-                        <ui:Label text="Raw | 0-400 cm | Last 10 s" name="graph_scale" style="color: rgb(140, 149, 184); font-size: 9.5px; height: 16px; flex-shrink: 0; -unity-text-align: upper-left; text-overflow: clip;"/>
+                        <ui:Label text="Raw | 0-250 cm | Last 10 s" name="graph_scale" style="color: rgb(140, 149, 184); font-size: 9.5px; height: 16px; flex-shrink: 0; -unity-text-align: upper-left; text-overflow: clip;"/>
                         <ui:VisualElement name="graph_host" style="height: 142px; min-height: 142px; flex-shrink: 0; background-color: rgb(28, 31, 37); overflow: hidden; width: 353px;"/>
                         <ui:VisualElement name="graph_time_axis" style="flex-direction: row; justify-content: space-between; height: 16px; flex-shrink: 0;">
                             <ui:Label text="-10 s" style="color: rgb(173, 179, 205); font-size: 10px; margin-top: 0;"/>
@@ -35,14 +35,14 @@
                 <ui:VisualElement name="Control_card" style="flex-grow: 0; flex-shrink: 0; width: 178px; margin-top: 10px;">
                     <ui:Label text="Controls" name="Controls" class="distance_title" style="color: white; font-size: 11.5px; white-space: nowrap; align-items: auto; -unity-text-align: middle-left; left: auto; -unity-font-style: bold; margin-bottom: 4px;"/>
                     <ui:Label text="Filter" name="Filter" class="lable_in_control" style="color: rgb(255, 255, 255); margin-bottom: 4px;"/>
-                    <ui:DropdownField label="" class="dropdown" style="background-color: rgb(188, 188, 188); margin-top: 1px;"/>
+                    <ui:DropdownField name="Filter_dropdown" label="" class="dropdown" style="background-color: rgb(188, 188, 188); margin-top: 1px;"/>
                     <ui:VisualElement name="Alpha" style="flex-grow: 0; flex-direction: row; align-items: stretch; margin-top: 4px; padding-bottom: 0; margin-bottom: 2px;">
                         <ui:Label text="Alpha:" name="al" class="lable_in_control"/>
-                        <ui:Label text="--" name="value" style="color: rgb(255, 255, 255); font-size: 12px; -unity-font-style: bold;"/>
+                        <ui:Label text="--" name="Alpha_value" style="color: rgb(255, 255, 255); font-size: 12px; -unity-font-style: bold;"/>
                     </ui:VisualElement>
-                    <ui:Slider label="" value="42" high-value="100" name="Alpha_Slider" style="color: rgb(255, 255, 255); -unity-text-outline-color: rgb(255, 255, 255); margin-bottom: 6px; margin-top: 0; width: 160px; background-color: rgb(34, 37, 43); height: 24px; border-top-left-radius: 9px; border-top-right-radius: 9px; border-bottom-right-radius: 9px; border-bottom-left-radius: 9px; border-left-color: rgb(188, 188, 188); border-right-color: rgb(188, 188, 188); border-top-color: rgb(188, 188, 188); border-bottom-color: rgb(188, 188, 188);"/>
+                    <ui:Slider label="" value="0.2" low-value="0.01" high-value="1" name="Alpha_Slider" style="color: rgb(255, 255, 255); -unity-text-outline-color: rgb(255, 255, 255); margin-bottom: 6px; margin-top: 0; width: 160px; background-color: rgb(34, 37, 43); height: 24px; border-top-left-radius: 9px; border-top-right-radius: 9px; border-bottom-right-radius: 9px; border-bottom-left-radius: 9px; border-left-color: rgb(188, 188, 188); border-right-color: rgb(188, 188, 188); border-top-color: rgb(188, 188, 188); border-bottom-color: rgb(188, 188, 188);"/>
                     <ui:Label text="UI update rate" name="UI_update_rate" class="lable_in_control"/>
-                    <ui:DropdownField label="" class="dropdown" style="background-color: rgb(188, 188, 188); margin-top: 1px;"/>
+                    <ui:DropdownField name="UI_rate_dropdown" label="" class="dropdown" style="background-color: rgb(188, 188, 188); margin-top: 1px;"/>
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>

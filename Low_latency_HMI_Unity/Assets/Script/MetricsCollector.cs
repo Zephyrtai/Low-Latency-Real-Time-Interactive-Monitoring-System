@@ -17,17 +17,10 @@ namespace Zephyr.UnityLowLatencyHMI
     {
         [SerializeField] private bool startOnPlay = true;
 
-        private struct ReceiveSample
-        {
-            public int PacketId;
-            public float RawDistance;
-            public long ReceivedTicks;
-        }
-
         // The receive thread writes; the main thread starts/stop recording.
         // Use the same lock to protect recoding.
         private readonly object bufferLock = new object(); // readonly: keep the referrence at the same table
-        private readonly List<ReceiveSample> samples = new List<ReceiveSample>(8200);
+        private readonly List<FilteredDistanceSample> samples = new List<FilteredDistanceSample>(8200);
 
         private bool isRecording;
         private bool needsExport;
@@ -77,25 +70,19 @@ namespace Zephyr.UnityLowLatencyHMI
             Debug.Log("Metrics: recording started.");
         }
 
-        public void RecordSample(int packetId, float rawDistance, long receivedTicks)
+        public void RecordSample(FilteredDistanceSample sample)
         {
             lock (bufferLock)
-            {  // Ignore samples before this session or after stopping.
-                if (!isRecording || receivedTicks < startTicks) return;
-
-                samples.Add(new ReceiveSample
-                {
-                    PacketId = packetId,
-                    ReceivedTicks = receivedTicks,
-                    RawDistance = rawDistance
-                });
+            {   // Play & stop use main thread in Unity, running time is different with Receive thread 
+                if (!isRecording || sample.ReceivedTicks < startTicks) return;
+                samples.Add(sample);
             }
         }
 
         [ContextMenu("Stop Recording And Export")]
         public void EndRecordingAndExport()
         {
-            ReceiveSample[] snapshot;
+            FilteredDistanceSample[] snapshot;
             long sessionStart;
             string path;
 
@@ -113,7 +100,7 @@ namespace Zephyr.UnityLowLatencyHMI
                 // `Using` ensure the file resources are released after writing is complete.
                 using (StreamWriter writer = new StreamWriter(path, false, new UTF8Encoding(true)))
                 {
-                    writer.WriteLine("packet_id,receive_since_start_ms,receive_interval_ms,raw_distance");
+                    writer.WriteLine("packet_id,receive_since_start_ms,receive_interval_ms,raw_distance,median_distance,median_lpf_distance,is_valid,median_window,alpha,filter_sample_count");
 
                     for (int i = 0; i < snapshot.Length; i++)
                     {
@@ -129,7 +116,13 @@ namespace Zephyr.UnityLowLatencyHMI
                             snapshot[i].PacketId.ToString(CultureInfo.InvariantCulture) + "," +
                             receiveSinceStartMs.ToString("F3", CultureInfo.InvariantCulture) + "," +
                             interval + "," +
-                            snapshot[i].RawDistance.ToString("R", CultureInfo.InvariantCulture));
+                            snapshot[i].RawDistance.ToString("R", CultureInfo.InvariantCulture) + "," +
+                            (snapshot[i].IsValid ? snapshot[i].MedianDistance.ToString("R", CultureInfo.InvariantCulture) : "") + "," +
+                            (snapshot[i].IsValid ? snapshot[i].MedianLpfDistance.ToString("R", CultureInfo.InvariantCulture) : "") + "," +
+                            (snapshot[i].IsValid ? "1" : "0") + "," +
+                            snapshot[i].MedianWindow.ToString(CultureInfo.InvariantCulture) + "," +
+                            snapshot[i].Alpha.ToString("R", CultureInfo.InvariantCulture) + "," +
+                            snapshot[i].FilterSampleCount.ToString(CultureInfo.InvariantCulture));
                     }
                 }
                 lock (bufferLock) needsExport = false;
@@ -141,7 +134,6 @@ namespace Zephyr.UnityLowLatencyHMI
             {
                 Debug.LogError("Metrics: Export failed; buffer retained. Retry Stop Recording And Export before starting a new session.\n" + error);
             }
-
         }
 
         private static double ToMilliseconds(long ticks)

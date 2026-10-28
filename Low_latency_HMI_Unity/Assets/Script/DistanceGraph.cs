@@ -10,7 +10,7 @@ public class DistanceGraph : VisualElement
 {
     private const double WindowSeconds = 10.0;
     private const float MinDistance = 0f;
-    private const float MaxDistance = 400f;
+    private const float MaxDistance = 250f;
     private const int MaxSamples = 1024;
 
     private struct GraphSample
@@ -55,6 +55,12 @@ public class DistanceGraph : VisualElement
         MarkDirtyRepaint();
     }
 
+    public void ClearSamples()
+    {
+        samples.Clear();
+        MarkDirtyRepaint();
+    }
+
     private void DrawGraph(MeshGenerationContext context)
     {
         Rect rect = contentRect;
@@ -96,7 +102,7 @@ public class DistanceGraph : VisualElement
         {
             // X: actual UI sample time within the latest 10 seconds.
             float time01 = Mathf.Clamp01((float)((sample.Time - windowStart) / WindowSeconds));
-            // Y: distance mapped to a fixed 0-400 cm range.
+            // Y: distance mapped to a fixed 0-250 cm range.
             // Clamping affects drawing only; the stored value is unchanged.
             float distance01 = Mathf.InverseLerp(MinDistance, MaxDistance, sample.Distance);
             Vector2 point = new Vector2(
