@@ -189,6 +189,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DashboardController
   receiver: {fileID: 729334516}
   uiUpdateRate: 30
+  dataTimeoutSeconds: 1.5
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -483,6 +484,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf2f899f96f393b4f9e5df335df51ef5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UDPReceiver
+  medianWindow: 3
+  filterAlpha: 0.2
+  logPackets: 0
   port: 5005
 --- !u!4 &729334517
 Transform:
@@ -511,7 +515,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05dbc89650f2f0141a7954a589cb0f02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Zephyr.UnityLowLatencyHMI.MetricsCollector
-  startOnPlay: 1
+  startOnPlay: 0
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
