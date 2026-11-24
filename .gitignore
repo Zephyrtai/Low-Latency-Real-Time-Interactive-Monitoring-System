@@ -4,6 +4,15 @@ notes/
 PICO_code/secrets.py
 PICO_code/__pycache__/
 
+# Data Analysis
+/PICO_code/Data Analysis/*
+
+!/PICO_code/Data Analysis/filtering_analysis.py
+!/PICO_code/Data Analysis/RTT_result_handler_csv.py
+
+PICO_code/Analysis to image/
+
+
 Low_latency_HMI_Unity/UIElementsSchema/
 
 .vscode/
